@@ -1,0 +1,15 @@
+{% extends 'base.html' %} {% block content %}
+<h1>CREATE</h1>
+<hr />
+<form
+  action="{% url 'movies:create' %}"
+  method="POST"
+  enctype="multipart/form-data"
+>
+  {% csrf_token %} {{ form.as_p }}
+  <!-- 이부분 추가하여 input, label들을 대체 -->
+  <input type="submit" />
+</form>
+<hr />
+<a href="{% url 'movies:index' %}">BACK</a>
+{% endblock content %}
