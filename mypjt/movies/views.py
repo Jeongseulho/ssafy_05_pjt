@@ -1,11 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views.decorators.http import (require_http_methods, require_POST,
                                           require_safe)
 
-from .models import Movie
 from .forms import MovieForm
-
-# Create your views here.
+from .models import Movie
 
 
 @require_safe
@@ -22,7 +20,7 @@ def create(req):
     if req.method == 'POST':
         # 파일 및 이미지는 req.FILES에 담기므로 이것도 넘겨줘야함
         form = MovieForm(req.POST, req.FILES)
-        if form.is_valid():
+        if form.is_valid() and req.user.is_authenticated:
             movie = form.save()
             return redirect('movies:detail', movie.pk)
     else:
@@ -46,7 +44,7 @@ def update(req, pk):
     movie = Movie.objects.get(pk=pk)
     if req.method == 'POST':
         form = MovieForm(req.POST, instance=movie)
-        if form.is_valid():
+        if form.is_valid() and req.user.is_authenticated:
             movie = form.save()
             return redirect('movies:detail', movie.pk)
     else:
@@ -61,6 +59,7 @@ def update(req, pk):
 
 @require_POST
 def delete(req, pk):
-    movie = Movie.objects.get(pk=pk)
-    movie.delete()
+    if req.user.is_authenticated:
+        movie = Movie.objects.get(pk=pk)
+        movie.delete()
     return redirect('movies:index')

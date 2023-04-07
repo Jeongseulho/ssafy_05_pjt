@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Document</title>
   </head>
 
   <body>
-    <nav>
+    <nav class="container">
+
       {% if request.user.is_authenticated %}
-      <!-- 유저 로그인 중이면 보여줄거 -->
+
+        <div class="container">
+          <h1>HELLO,
+            {{ user }}
+          </h1>
+          <a href="{% url 'accounts:update' %}" class="btn btn-warning">회원정보수정</a>
+          <form action="{% url 'accounts:logout' %}" method="POST" class="d-inline">
+            {% csrf_token %}
+            <button class="btn btn-secondary">Logout</button>
+          </form>
+          <form action="{% url 'accounts:delete' %}" method="POST" class="d-inline">
+            {% csrf_token %}
+            <button class="btn btn-danger">회원탈퇴</button>
+          </form>
+        </div>
+        <hr/>
+
       {% else %}
-      <!-- 유저 로그인 안한상태면 보여줄거 -->
+        <a href="{% url 'accounts:login' %}" class="btn btn-secondary">Login</a>
+        <a href="{% url 'accounts:signup' %}" class="btn btn-secondary">SignUp</a>
+        <hr/>
       {% endif %}
     </nav>
 
     {% block content %}{% endblock content %}
   </body>
+
 </html>
